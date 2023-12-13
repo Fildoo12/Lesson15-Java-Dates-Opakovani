@@ -1,9 +1,16 @@
 package cz.secda1.spsmb.javaDates;
 
+import com.sun.jdi.event.LocatableEvent;
+
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 public class DateTimeUtils {
@@ -15,7 +22,7 @@ public class DateTimeUtils {
      * @return String s naformátovaným datem
      */
     public static String formattedDate(LocalDateTime date) {
-        return null;
+        return date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
     }
 
     /**
@@ -25,7 +32,7 @@ public class DateTimeUtils {
      * @return
      */
     public static LocalDate parseDate(String dateString) {
-        return null;
+        return LocalDate.parse(dateString, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
     /**
@@ -35,7 +42,7 @@ public class DateTimeUtils {
      * @return vložené datum s časem 12:00
      */
     public static String atMoonTime(LocalDate date) {
-        return null;
+        return date.atStartOfDay().plusHours(12).format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
     }
 
     /**
@@ -46,12 +53,12 @@ public class DateTimeUtils {
      */
     public static String whatsTheDateToday(LocalDate today) {
         //dopolňte do proměnné dayOfWeek den v týdnu.
-        DayOfWeek dayOfWeek = null;
+        DayOfWeek dayOfWeek = today.getDayOfWeek();
 
         String dayNameInCzech = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault());
 
         //Sestavte message "Dnes je <dayNameInCzech>." pomocí String.format()
-        String formattedMessage = null;
+        String formattedMessage = String.format("Dnes je %s.", dayNameInCzech);
         return formattedMessage;
     }
 
@@ -65,7 +72,8 @@ public class DateTimeUtils {
      * @return String message
      */
     public static String daysToChristmas() {
-        return null;
+        LocalDate christmas = LocalDate.of(2023,12,24);
+        return  String.format("Do Vánoc zbývá %d dní.",christmas.compareTo(LocalDate.now()));
     }
 
     /**
@@ -81,7 +89,16 @@ public class DateTimeUtils {
      * @return List<LocalDate> s oběma seřazenými datumy
      */
     public static List<LocalDate> smallerFirst(LocalDate start, LocalDate end){
-        return null;
+        List<LocalDate> listWithDates = new ArrayList<>();
+        int x = start.compareTo(end);
+        if (x < 0){
+            listWithDates.add(start);
+            listWithDates.add(end);
+        } else {
+            listWithDates.add(end);
+            listWithDates.add(start);
+        }
+        return listWithDates;
     }
 
     /**
@@ -90,6 +107,13 @@ public class DateTimeUtils {
      * @return první pondělí po Vánocích (LocalDate)
      */
     public static LocalDate firstMondayAfterChristmas(){
+        LocalDate christmas = LocalDate.of(2023, 12, 24);
+        DayOfWeek day = christmas.plusDays(1).getDayOfWeek();
+        for (int i = 0; i < 7; i++) {
+            if (day.equals(DayOfWeek.MONDAY)){
+                return christmas.plusDays(1);
+            }
+        }
         return null;
     }
 
